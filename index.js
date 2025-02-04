@@ -5,14 +5,14 @@ const cors = require('cors')
 const app = express()
 const Person = require('./models/person')
 const errorHandler = (error, request, response, next) => {
-    console.error("errorHandler",error.message)
-  
+    console.error("errorHandler", error.message)
+
     if (error.name === 'CastError') {
-      return response.status(400).send({ error: 'malformatted id' })
+        return response.status(400).send({ error: 'malformatted id' })
     }
-  
+
     next(error)
-  }
+}
 
 app.use(cors())
 app.use(express.static('dist'))
@@ -45,7 +45,7 @@ let persons = [
 ]
 
 app.get('/api/info', (request, response) => {
-    res.send(`Phonebook has info for ${persons.length} people <br></br>${Date()}`)
+    response.send(`Phonebook has info for ${persons.length} people <br></br>${Date()}`)
 })
 
 app.get('/api/persons', (request, response) => {
@@ -53,6 +53,7 @@ app.get('/api/persons', (request, response) => {
         .then(persons => {
             response.json(persons)
         })
+        .catch(error => next(error))
 })
 //id:n avulla haettavan kontaktin route
 app.get('/api/persons/:id', (request, response) => {
@@ -66,11 +67,11 @@ app.get('/api/persons/:id', (request, response) => {
 })
 //id:n avulla haettavan kontaktin poiston route
 app.delete('/api/persons/:id', (request, response, next) => {
-  Person.findByIdAndDelete(request.params.id)
-  .then(result => {
-    response.status(204).end()
-  })
-  .catch(error => next(error))
+    Person.findByIdAndDelete(request.params.id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 
@@ -110,6 +111,22 @@ app.post('/api/persons', (request, response) => {
         .then(savedContact => {
             response.json(savedContact)
         })
+})
+
+//kontaktin päivityksen route
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+
+    const person = {
+        name: body.name,
+        number: body.number,
+    }
+
+    Person.findByIdAndUpdate(request.params.id, person)
+        .then(updatedContact => {
+            response.json(updatedContact)
+        })
+        .catch(error => next(error))
 })
 
 app.use(errorHandler)
