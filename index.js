@@ -76,23 +76,26 @@ app.post('/api/persons', (request, response) => {
         })
     }
     //käydään tietokanta läpi ja tallennetaan tiedot muuttujaan, jos täydellinen mätsi löydetään
+    /* kommentoitu duplikaattien tarkistus pois tehtävä 3.13...
     const notSoUnique = persons.find(person => person.name === body.name)
     //testataan löytyykö ja palautetaan sopiva status error viesteineen
-    if (notSoUnique) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
+     
+        if (notSoUnique) {
+            return response.status(400).json({
+                error: 'name must be unique'
+            })
+        }
+    */
 
-    const person = {
+    const person = new Person({
         name: body.name,
         number: body.number,
-        id: generateId(),
-    }
+    })
 
-    persons = persons.concat(person)
-
-    response.json(person)
+    person.save()
+        .then(savedContact => {
+            response.json(savedContact)
+        })
 })
 
 const PORT = process.env.PORT || 3001
