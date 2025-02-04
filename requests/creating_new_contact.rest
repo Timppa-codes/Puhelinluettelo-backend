@@ -1,4 +1,4 @@
-POST https://puhelinluettelo-backend-k01a.onrender.com/api/persons
+POST https://puhelinluettelofullstack.onrender.com/api/persons
 Content-Type: application/json
 
 {

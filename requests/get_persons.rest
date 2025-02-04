@@ -1,1 +1,1 @@
-GET  https://puhelinluettelo-backend-k01a.onrender.com/api/persons
+GET  https://puhelinluettelofullstack.onrender.com/api/persons
