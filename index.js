@@ -4,11 +4,22 @@ const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
 const Person = require('./models/person')
+const errorHandler = (error, request, response, next) => {
+    console.error("errorHandler",error.message)
+  
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' })
+    }
+  
+    next(error)
+  }
 
 app.use(cors())
 app.use(express.static('dist'))
 app.use(express.json())
 app.use(morgan('tiny'))
+
+
 
 let persons = [
     {
@@ -54,18 +65,21 @@ app.get('/api/persons/:id', (request, response) => {
     }
 })
 //id:n avulla haettavan kontaktin poiston route
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-
+app.delete('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndDelete(request.params.id)
+  .then(result => {
     response.status(204).end()
+  })
+  .catch(error => next(error))
 })
 
-//kontaktien lisäykseen käytettävä route
+
 const generateId = () => {
     const newId = Math.floor((Math.random() * 1000) + 1)
     return newId
 }
+
+//kontaktien lisäykseen käytettävä route
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
@@ -97,6 +111,8 @@ app.post('/api/persons', (request, response) => {
             response.json(savedContact)
         })
 })
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
