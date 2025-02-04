@@ -1,1 +1,1 @@
-https://puhelinluettelo-backend-k01a.onrender.com
+https://puhelinluettelofullstack.onrender.com
