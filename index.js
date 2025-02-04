@@ -50,7 +50,9 @@ app.get('/api/persons/:id', (request, response) => {
 })
 //id:n avulla haettavan kontaktin poiston route
 app.delete('/api/persons/:id', (request, response) => {
-    console.log("käyttäjä poisti id:", request.params.id)
+    const id = Number(request.params.id)
+    persons = persons.filter(person => person.id!== id)
+
     response.status(204).end()
 })
 
