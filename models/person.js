@@ -21,6 +21,7 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', personSchema)
 
 //kaikkien henkilöiden haku tietokannasta
+
 personSchema.set('toJSON', {
     transform: (document, returnedObject) => {
       returnedObject.id = returnedObject._id.toString()
@@ -30,4 +31,4 @@ personSchema.set('toJSON', {
   })
 
 
-module.exports = mongoose.model('Person', noteSchema)
+module.exports = mongoose.model('Person', personSchema)
